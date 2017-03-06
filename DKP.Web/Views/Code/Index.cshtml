@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Shared/_RightTableLayout.cshtml";
+    ViewBag.TableUrl = Url.Action("List", "Code");
+}
+
+@section toolbar{
+    <div id="toolbar" class="btn-group">
+        @FormHelpers.Button(id: "btn_add", icon: "glyphicon-plus", permission: true, btnStyle: "primary", title: "新增", toggle: "modal", target: "modal", href: Url.Action("Add", "Code"))
+    </div>
+    <div class="modal inmodal" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated fadeIn">
+            </div>
+        </div>
+    </div>
+    <div id="hidToolbar" class="hide">
+        @FormHelpers.Button(id: "btn_edit", icon: "glyphicon-pencil", permission: true, a: true, href: Url.Action("Edit", "Code"), btnStyle: "warning ", title: "修改", toggle: "modal", target: "modal", hf: true)
+        @FormHelpers.Button(id: "ajax_delete", icon: "glyphicon-remove", permission: true, a: true, href: Url.Action("Delete", "Code"), btnStyle: "danger", title: "删除", hf: true, ajax: "del(this)")
+        @FormHelpers.Button(id: "ajax_download", icon: "glyphicon-download-alt", permission: true, a: true, href: Url.Action("Download", "Code"), btnStyle: "primary", title: "下载", hf: true, ajax: "down(this)")
+    </div>
+}
+@section table{
+    <th data-field="Number">编号</th>
+    <th data-field="Name">名称</th>
+    <th data-field="Content">内容</th>
+    <th data-field="Start">开始时间</th>
+    <th data-field="End">结束时间</th>
+    <th data-field="Count">剩余数量</th>
+    <th data-field="Id" data-width="120" data-formatter="operateInfo">操作</th>
+}

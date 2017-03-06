@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Shared/_RightTableLayout.cshtml";
+    ViewBag.TableUrl = Url.Action("List", "User");
+}
+
+@section toolbar{
+    <div id="toolbar" class="btn-group">
+        @FormHelpers.Button(id: "btn_add", icon: "glyphicon-plus",permission:true, btnStyle: "primary", title: "新增",toggle:"modal",target: "modal", href: Url.Action("Add","User"))
+    </div>
+    <div class="modal inmodal" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated fadeIn">
+            </div>
+        </div>
+    </div>
+    <div id="hidToolbar" class="hide">
+        @FormHelpers.Button(id: "btn_edit",a:true, icon: "glyphicon-pencil", permission: true,href: Url.Action("Edit", "User"), btnStyle: "warning ", title: "修改", toggle: "modal", target: "modal", hf: true)
+        @FormHelpers.Button(id: "ajax_delete", a: true, icon: "glyphicon-remove", permission: true,href: Url.Action("Delete", "User"), btnStyle: "danger", title: "删除", hf:true,ajax:"del(this)")
+    </div>
+    }
+@section table{
+    <th data-field="Number" data-width="50">工号</th>
+    <th data-field="RealName">姓名</th>
+    <th data-field="Telephone">手机号</th>
+    <th data-field="Email">Email</th>
+    <th data-field="Id" data-width="80" data-formatter="operateInfo">操作</th>
+}
+
+
+

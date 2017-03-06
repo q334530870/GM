@@ -1,0 +1,55 @@
+﻿@{ 
+    if (Model.Id > 0)
+    {
+        @FormHelpers.Hidden("Id", Model.Id)
+        @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+        @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+        @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+    }
+}
+
+<script>
+    $(function () {
+        $("#allcheck").click(function () {
+            if ($(":checkbox[name^='Servers[']:eq(0)").attr("checked") != "checked") {
+                $(":checkbox[name^='Servers[']").removeAttr("checked");
+                $(":checkbox[name^='Servers[']").siblings("label").click();
+                $(":checkbox[name^='Servers[']").attr("checked", "checked");
+            }
+            else {
+                $(this).removeAttr("checked");
+                $(":checkbox[name^='Servers[']").removeAttr("checked");
+            }
+        });
+        var editor = new Simditor({
+            textarea: $('#editor')
+            //optional options
+        });
+    });
+
+</script>
+<div class="form-group">
+    @FormHelpers.Text("开始日期", "StartDate", Model.Id>0?Model.StartDate.ToString("yyyy-MM-dd HH:mm:ss"):"", valid: "required", inputSize: "4", date: true)
+    @FormHelpers.Text("结束日期", "EndDate", Model.Id > 0 ? Model.EndDate.ToString("yyyy-MM-dd HH:mm:ss") : "", valid: "required", inputSize: "4", date: true)
+</div>
+<div class="form-group">
+    @FormHelpers.Text("重复间隔", "RepeatTime", Model.Id > 0 ? Model.RepeatTime:"", valid: "required", inputSize: "4", right: "分钟")
+    @FormHelpers.Radio(id: "radio1", text: "开启方式", title: "聊天频道", value: "1", name: "Type", inline: true, ck: Model.Type == 2?false:true)
+    @FormHelpers.Radio(id: "radio2", title: "全频滚动", value: "2", name: "Type", inline: true,ck: Model.Type == 2 ? true : false)
+</div>
+<div class="form-group">
+    @{
+        @FormHelpers.Checkbox(id: "allcheck", title: "全选", inline: true, type: "success", cls: "checkbox-circle")
+        int i = 0;
+        var ServerIds = Model.ServerIds + ",";
+        foreach (var server in ViewBag.Servers)
+        {
+            var val = server["HostName"];
+            @FormHelpers.Checkbox(id: "checkbox"+i, text: i==0? "服务器":"", title: val, value: val, name: "Servers["+i+"]", inline: true,ck: ServerIds.IndexOf(val)>=0?true:false)
+            i++;
+        }
+    }
+</div>
+<div class="form-group">
+    @FormHelpers.Rich(id: "editor", name: "Contents", text: "内容", inputSize: "10",value: Model.Id > 0 ?Model.Contents:"")
+</div>

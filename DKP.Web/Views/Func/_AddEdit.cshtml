@@ -1,0 +1,13 @@
+﻿@*@{
+        if (Model.Id > 0)
+        {
+            @FormHelpers.Hidden("Id", Model.Id)
+            @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+            @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+            @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+        }
+    }*@
+<div class="form-group">
+    @FormHelpers.Text("功能名称", "Name", "", valid: "required", inputSize: "8",labelSize:"4")
+</div>
+

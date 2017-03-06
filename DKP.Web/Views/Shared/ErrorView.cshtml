@@ -1,0 +1,7 @@
+﻿<script src="~/Content/js/jquery.min.js?v=2.1.4"></script>
+<script src="~/Content/js/bootstrap.min.js?v=3.3.6"></script>
+<script type="text/javascript">
+    //$('#modal').modal('hide');
+    $("#modal").click();
+    window.parent.showMsg('@(Model.code == 200?"success":"error")', '@Model.msg');
+</script>

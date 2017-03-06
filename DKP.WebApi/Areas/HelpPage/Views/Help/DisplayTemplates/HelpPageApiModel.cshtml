@@ -1,0 +1,43 @@
+@using System.Web.Http
+@using Papaya.WebApi.Areas.HelpPage.Models
+@model HelpPageApiModel
+
+@{ 
+    var description = Model.ApiDescription;
+    bool hasParameters = description.ParameterDescriptions.Count > 0;
+    bool hasRequestSamples = Model.SampleRequests.Count > 0;
+    bool hasResponseSamples = Model.SampleResponses.Count > 0;
+}
+<h1>@description.HttpMethod.Method @description.RelativePath</h1>
+<div>
+    @if (description.Documentation != null)
+    {
+        <p>@description.Documentation</p>
+    }
+    else
+    {
+        <p>无</p>
+    }
+
+    @if (hasParameters || hasRequestSamples)
+    {
+        <h2>请求参数</h2>
+        if (hasParameters)
+        {
+            <h3>参数列表</h3>
+            @Html.DisplayFor(apiModel => apiModel.ApiDescription.ParameterDescriptions, "Parameters")
+        }
+        if (hasRequestSamples)
+        {
+            <h3>Request body formats</h3>
+            @Html.DisplayFor(apiModel => apiModel.SampleRequests, "Samples")
+        }
+    } 
+
+    @if (hasResponseSamples)
+    {
+        <h2>返回信息</h2> 
+        <h3>Response body formats</h3>
+        @Html.DisplayFor(apiModel => apiModel.SampleResponses, "Samples")
+    }
+</div>

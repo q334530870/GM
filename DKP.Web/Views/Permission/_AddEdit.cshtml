@@ -1,0 +1,41 @@
+﻿@{ 
+    if (Model.Id > 0)
+    {
+        @FormHelpers.Hidden("Id", Model.Id)
+        @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+        @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+        @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+        @FormHelpers.Hidden("ParentId", Model.ParentId)
+    }
+}
+@{
+    if (ViewBag.Parent != null)
+    {
+        <div class="form-group">
+            @FormHelpers.Text("上级",value:ViewBag.Parent.Name, disable:true)
+            @FormHelpers.Hidden("ParentId",ViewBag.Parent.Id)
+        </div>
+    }
+}
+<div class="form-group">
+   @FormHelpers.Text("名称", "Name", Model.Name, valid: "required", inputSize: "10")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("Area", "Area", Model.Area, inputSize: "10")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("Controller", "Controller", Model.Controller, inputSize: "10")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("Action", "Action", Model.Action,  inputSize: "10")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("级别", "Level", ViewBag.Parent != null?ViewBag.Parent.Level+1:Model.Level, valid: "required", inputSize: "1")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("排序", "Order", Model.Order, inputSize: "1")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("图标", "Icon", Model.Icon, inputSize: "2")
+</div>
+

@@ -1,0 +1,355 @@
+﻿@{
+    if (Model.Id > 0 || Model.ActivityInfoId > 0)
+    {
+        @FormHelpers.Hidden("Id", Model.Id)
+        @FormHelpers.Hidden("ActivityInfoId", Model.ActivityInfoId)
+        @FormHelpers.Hidden("ActType", Model.ActType)
+        @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+        @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+        @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+    }
+}
+<script src="~/Content/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+<script src="~/Content/js/plugins/bootstrap-select/bootstrap-select.js"></script>
+<link href="~/Content/css/plugins/bootstrap-select/bootstrap-select.css" rel="stylesheet" />
+<script>
+    var addline2;
+    $(function () {
+        var serverJson;
+        //设置点击添加一行
+        var addline = $(".demoline").html();
+        addline2 = $(".demoline2").html();
+        var addsline = $(".sdemoline").html();
+        var serverSelect = $("#serverDiv").html();
+        $("#server").remove();
+        $(".demoline,.sdemoline,.demoline2").remove();
+        //添加名次
+        $("#addItemButton,#addItemButtons").click(function () {
+            var index = $(".rstline").find(".phline").size();
+            var btn = '<button title="添加奖励物品" type="button" href="javascript:void(0)" onclick="addItm(this)" class="ItemBtn btn btn-info btn-sm "><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>';
+            var btn2 = '<button type="button" href="javascript:void(0)" class="ItemBtn btn btn-danger btn-sm " onclick="removeLinePH(this)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
+            var line = "<div class='alert alert-warning phline'><div  class='form-group al" + index + "' style='margin-bottom:0px;padding-left:10px;'>" + addline + btn2 + btn + "</div></div>";
+            $(".rstline").append(line);
+            if($(this).attr("id") == "addItemButton"){
+                $(".al" + index + ":last").find(".lmc").remove();
+                var $endParent = $(".al" + index + ":last").find(".EndRank").parent();
+                $endParent.html("").css("width", "168px");
+                //$(".al" + index + ":last").find("input[name='mi.StartRank']").parent().parent().prepend($endParent);
+            }
+        });
+        //添加服务器
+        $("#addServerButton").click(function () {
+            if (!$("#agentId").val()) {
+                parent.showMsg("error", "请选择渠道");
+                return;
+            }
+            if (!$("#server").val()) {
+                parent.showMsg("error", "请选择服务器");
+                return;
+            }
+            var serverIds = $("#server").val().toString().split(",");
+            for (var i = 0; i < serverIds.length; i++) {
+                var serverName = $("#server").find("option[value=" + serverIds[i] + "]").html();
+                var serverId = serverIds[i];
+                var index = $(".srstline").find(".form-group").size();
+                var line = "<div  class='form-group sal" + index + "' style='margin-bottom:0px;'>" + addsline + "</div>";
+                $(".srstline").append(line);
+                $(".sal" + index + ":last").find("input[name='smi.AgentName']").val($("#agent").val()).attr("name", "smi[" + index + "].AgentName");
+                $(".sal" + index + ":last").find("input[name='smi.AgentId']").val($("#agentId").val()).attr("name", "smi[" + index + "].AgentId");
+                $(".sal" + index + ":last").find("input[name='smi.ServerName']").val(serverName).attr("name", "smi[" + index + "].ServerName");
+                $(".sal" + index + ":last").find("input[name='smi.ServerId']").val(serverId).attr("name", "smi[" + index + "].ServerId");
+                index++;
+            }
+
+        });
+
+        //初始化suggest控件
+        var agentSuggest = $("#agent").bsSuggest({ url: "@(Url.Action("GetAgents", "Mail"))", effectiveFields: ["id", "name"], effectiveFieldsAlias: {"name": "名称" }, idField: "id", keyField: "name" })
+            .on('onSetSelectValue', function (e, keyword) {
+                $("#agentId").val(keyword["id"]);
+                var options = "";
+                //获取服务器列表
+                $.ajax({
+                    type: "POST",
+                    url: "@(Url.Action("GetServers", "Mail"))",
+                    data: { id: keyword["id"] },
+                    dataType: "json",
+                    error: function () {
+                        window.parent.showMsg("error", "服务器超时！");
+                    },
+                    success: function (data) {
+                        serverJson = data["value"];
+                        if (serverJson.length > 0) {
+                            for (var i = 0; i < serverJson.length; i++) {
+                                options += "<option value='" + serverJson[i]["id"] + "'>" + serverJson[i]["name"] + "(" + serverJson[i]["key"] + ")</option>";
+                            }
+                            //初始化服务器选择空间
+                            $("#serverDiv").html("");
+                            $("#serverDiv").append(serverSelect);
+                            $("#server").append(options);
+                            $('#server').selectpicker();
+                        }
+                    }
+                });
+        }).on('onUnsetSelectValue', function (e) {
+            $("#agentId,#serverId,#server").val("");
+            $("#server").attr("disabled", "disabled");
+            $("#server").parent().find(".dropdown-toggle").attr("disabled", "disabled");
+            $("#server").bsSuggest("destroy");
+        });
+
+        //初始化suggest控件
+        var typeSuggest = $("#type").bsSuggest({ url: "@(Url.Action("GetTypes", "Mail"))", effectiveFields: ["reward_type", "name"], effectiveFieldsAlias: { "reward_type": "id", "name": "名称" }, idField: "reward_type", keyField: "name" })
+                .on('onSetSelectValue', function (e, keyword) {
+                    $("#typeId").val(keyword["id"]);
+                    $("#item,#itemId").val("");
+                    $("#item").removeAttr("disabled");
+                    $("#item").parent().find(".dropdown-toggle").removeAttr("disabled");
+                    $("#item").bsSuggest("destroy");
+                    $("#item").bsSuggest({ url: "@(Url.Action("GetItems", "Mail"))?id=" + keyword["id"], effectiveFields: ["id", "name"], effectiveFieldsAlias: {"name": "名称" }, idField: "id", keyField: "name" })
+                        .on('onSetSelectValue', function (e, keyword) {
+                            $("#itemId").val(keyword["id"]);
+                        }).on('onUnsetSelectValue', function (e) {
+                            $("#itemId").val("");
+                        });
+        }).on('onUnsetSelectValue', function (e) {
+            $("#typeId,#itemId,#item").val("");
+            $("#item").attr("disabled", "disabled");
+            $("#item").parent().find(".dropdown-toggle").attr("disabled", "disabled");
+            $("#item").bsSuggest("destroy");
+        });
+        $("#item").attr("disabled", "disabled");
+    });
+    //删除道具行
+    function removeLine(arg) {
+        $(arg).parent().remove();
+        resetItemIndex();
+    }
+    //重置下标
+    function resetItemIndex() {
+        var index = 0;
+        $(".rstline").find(".itline").each(function () {
+            $(this).find("input[name$='.TypeName']").attr("name", "mi[" + index + "].TypeName");
+            $(this).find("input[name$='.TypeId']").attr("name", "mi[" + index + "].TypeId");
+            $(this).find("input[name$='.ItemName']").attr("name", "mi[" + index + "].ItemName");
+            $(this).find("input[name$='.ItemId']").attr("name", "mi[" + index + "].ItemId");
+            $(this).find("input[name$='.Count']").attr("name", "mi[" + index + "].Count");
+            $(this).find("input[name$='.Amount']").attr("name", "mi[" + index + "].Amount");
+            $(this).find("input[name$='.StartRank']").attr("name", "mi[" + index + "].StartRank");
+            $(this).find("input[name$='.EndRank']").attr("name", "mi[" + index + "].EndRank");
+
+            index++;
+        });
+    }
+    //删除排名行
+    function removeLinePH(arg) {
+        $(arg).parent().parent().remove();
+        var index = 0;
+        resetItemIndex();
+    }
+    //删除服务器行
+    function removeSLine(arg) {
+        $(arg).parent().remove();
+        var index = 0;
+        $(".srstline").find(".form-group").each(function () {
+            $(this).find("input[name$='.AgentName']").attr("name", "smi[" + index + "].AgentName");
+            $(this).find("input[name$='.AgentId']").attr("name", "smi[" + index + "].AgentId");
+            $(this).find("input[name$='.ServerName']").attr("name", "smi[" + index + "].ServerName");
+            $(this).find("input[name$='.ServerId']").attr("name", "smi[" + index + "].ServerId");
+            index++;
+        });
+    }
+
+    //添加奖励物品
+    function addItm(arg) {
+        var $root = $(arg).parent().parent();
+        if (!$("#typeId").val()) {
+            parent.showMsg("error", "请选择物品类型");
+            return;
+        }
+        if (!$("#itemId").val()) {
+            parent.showMsg("error", "请选择物品");
+            return;
+        }
+        if (!$root.find(".StartRank").val() || ($root.find(".EndRank").size() > 0 && !$root.find(".EndRank").val())) {
+            parent.showMsg("error", "请填写名次");
+            return;
+        }
+        var index = $(".itline").size();
+        var line = "<div  class='form-group itline itm" + index + "' style='margin-bottom:0px;padding-left:30px;margin-top:5px;'>" + addline2 + "</div>";
+        $root.append(line);
+        $root.find(".itm" + index + ":last").find("input[name='mi.TypeName']").val($("#type").val()).attr("name", "mi[" + index + "].TypeName");
+        $root.find(".itm" + index + ":last").find("input[name='mi.TypeId']").val($("#typeId").val()).attr("name", "mi[" + index + "].TypeId");
+        $root.find(".itm" + index + ":last").find("input[name='mi.ItemName']").val($("#item").val()).attr("name", "mi[" + index + "].ItemName");
+        $root.find(".itm" + index + ":last").find("input[name='mi.ItemId']").val($("#itemId").val()).attr("name", "mi[" + index + "].ItemId");
+        $root.find(".itm" + index + ":last").find("input[name='mi.Count']").attr("name", "mi[" + index + "].Count");
+        $root.find(".itm" + index + ":last").find("input[name='mi.Amount']").attr("name", "mi[" + index + "].Amount");
+        $root.find(".itm" + index + ":last").find("input[name='mi.StartRank']").val($root.find(".StartRank").val()).attr("name", "mi[" + index + "].StartRank");
+        $root.find(".itm" + index + ":last").find("input[name='mi.EndRank']").val($root.find(".EndRank").val()).attr("name", "mi[" + index + "].EndRank");
+    }
+    //设置排名hidden域
+    function setRank(arg,rank) {
+        if (rank == "1") {
+            $(arg).parent().parent().parent().find("[name$='StartRank']").val($(arg).val());
+        }
+        else if (rank == "2") {
+            $(arg).parent().parent().parent().find("[name$='EndRank']").val($(arg).val());
+        }
+    }
+</script>
+<style>
+     .ItemButton {
+         margin-top:2px;
+        margin-left: 10px;
+    }
+    .ItemButton2 {
+        margin-left: 10px;
+        margin-bottom:10px;
+    }
+    .ItemBtn{
+        float:right;
+        margin-top:2px;
+        margin-right:10px;
+    }
+    .control-label.lmc{
+        text-align:center;
+    }
+    .form-control.mc{
+        width:50px;
+        padding:3px;
+        text-align:center;
+    }
+    .rstline .control-label{
+        width:40px;
+        padding-left:5px;
+        padding-right:5px;
+    }
+</style>
+
+<div class="form-group">
+    @FormHelpers.Select(name: "Type", text: "活动类型", inputSize: "3", valid: "required", options: ViewBag.Types, selectValue: Model.Type)
+    @FormHelpers.Text(name: "Name", title: "活动名称", inputSize: "3", value: Model.Name, valid: "required")
+</div>
+<div class="form-group">
+    @FormHelpers.Text(name: "StartDate", title: "生效日期", date: true, inputSize: "3", value: Model.Id > 0 || Model.ActivityInfoId > 0 ? Model.StartDate.ToString("yyyy-MM-dd hh:mm:ss") : "", valid: "required")
+    @FormHelpers.Text(name: "EndDate", title: "失效日期", date: true, inputSize: "3", value: Model.Id > 0 || Model.ActivityInfoId > 0 ? Model.EndDate.ToString("yyyy-MM-dd hh:mm:ss") : "", valid: "required")
+</div>
+<div class="form-group">
+    @FormHelpers.TextArea("活动描述", name: "Desc", value: Model.Id > 0 || Model.ActivityInfoId > 0 ? Model.Desc : "", inputSize: "8")
+</div>
+<div class="alert alert-info" style="padding-left:0px;">
+    <div class="form-group" style="margin-bottom:0px;">
+        @FormHelpers.Text(title: "渠道", name: "AgentName", inputSize: "3", id: "agent", suggest: true)
+        @FormHelpers.Hidden("AgentId", "", id: "agentId")
+        <label class="col-sm-2 control-label">服务器</label>
+        <div class="input-group col-sm-3 " id="serverDiv" style="float:left;">
+            <select class="selectpicker" id="server" data-live-search="true" multiple data-selected-text-format="count" data-actions-box="true" style="display:none;"></select>
+        </div>
+        @FormHelpers.Button(id: "addServerButton", btnStyle: "info", title: "添加服务器", icon: "glyphicon-plus", outline: false, cls: "ItemButton")
+    </div>
+</div>
+<div class="sdemoline alert alert-success">
+    @FormHelpers.Text(name: "smi.AgentName", title: "渠道", inputSize: "3", rdly: true, valid: "required")
+    @FormHelpers.Hidden("smi.AgentId", "")
+    @FormHelpers.Text(name: "smi.ServerName", title: "服务器", inputSize: "3", rdly: true, valid: "required")
+    @FormHelpers.Hidden("smi.ServerId", "")
+    @FormHelpers.Button(btnStyle: "danger", title: "", outline: false, cls: "ItemButton", icon: "glyphicon-remove", ajax: "removeSLine(this)")
+</div>
+<div class="srstline alert alert-success" style="max-height:300px;overflow-y:auto">
+    @{
+        if (Model.ActivityServers != null)
+        {
+            var servers = Model.ActivityServers;
+            int s = 0;
+            foreach (var ser in servers)
+            {
+                <div class='form-group sal@(s)' style='margin-bottom:0px;'>
+                    @FormHelpers.Text(name: "smi[" + s + "].AgentName", title: "渠道", inputSize: "3", rdly: true, valid: "required", value: ser.AgentName)
+                    @FormHelpers.Hidden("smi[" + s + "].AgentId", ser.AgentId)
+                    @FormHelpers.Text(name: "smi[" + s + "].ServerName", title: "服务器", inputSize: "3", rdly: true, valid: "required", value: ser.ServerName)
+                    @FormHelpers.Hidden("smi[" + s + "].ServerId", ser.ServerId)
+                    @FormHelpers.Button(btnStyle: "danger", title: "", outline: false, cls: "ItemButton", icon: "glyphicon-remove", ajax: "removeSLine(this)")
+                </div>
+                s++;
+            }
+        }
+    }
+</div>
+<div class="alert alert-info" style="padding-left:0px;">
+    <div class="form-group" style="margin-bottom:0px;">
+        @FormHelpers.Text(title: "选择类型", inputSize: "3", id: "type", suggest: true)
+        @FormHelpers.Hidden("", "", id: "typeId")
+        @FormHelpers.Text(title: "选择物品", inputSize: "3", id: "item", suggest: true)
+        @FormHelpers.Hidden("", "", id: "itemId")
+    </div>
+</div>
+<div class="demoline alert alert-success">
+    @(FormHelpers.Text(title:"", left: "第", inputSize: "1", labelSize: "1",cls: "mc StartRank", attr: "onkeyup=setRank(this,1)", right: "名"))
+    @(FormHelpers.Text( title: "到", left: "第", inputSize: "1", labelSize: "1", cls: "mc EndRank", lcls: "lmc", attr: "onkeyup=setRank(this,2)", right: "名"))
+ 
+</div>
+<div class="demoline2">
+    @FormHelpers.Text(name: "mi.Count", title: "数量", inputSize: "01", labelSize: "1", cls: "mc", valid: "required")
+    @FormHelpers.Text(name: "mi.TypeName", title: "类型", inputSize: "2", labelSize: "1", rdly: true, valid: "required")
+    @FormHelpers.Hidden("mi.TypeId", "")
+    @FormHelpers.Text(name: "mi.ItemName", title: "物品", inputSize: "2", labelSize: "1", rdly: true, valid: "required")
+    @FormHelpers.Hidden("mi.ItemId", "")
+    @FormHelpers.Hidden("mi.StartRank", "")
+    @FormHelpers.Hidden("mi.EndRank", "")
+    @FormHelpers.Button(btnStyle: "danger", title: "", outline: false, cls: "ItemButton", icon: "glyphicon-remove", ajax: "removeLine(this)")
+</div>
+<div class="rstline alert alert-success" style="max-height:300px;overflow-y:auto">
+    @FormHelpers.Button(id: "addItemButton", btnStyle: "info", title: "添加名次", icon: "glyphicon-plus", outline: false, cls: "ItemButton2",showText:true)
+    @FormHelpers.Button(id: "addItemButtons", btnStyle: "primary", title: "添加名次组", icon: "glyphicon-plus", outline: false, cls: "ItemButton2", showText: true)
+    @{
+        if (Model.ActivityItems != null)
+        {
+            var items = Model.ActivityItems as List<ActivityItem>;
+            var phList = items.GroupBy(d => new { d.StartRank, d.EndRank }).Select(group => new
+            {
+                act = group.Key,
+                Count = group.Count()
+            }); ;
+            int i = 0;
+            int j = 0;
+            foreach (var gp in phList)
+            {
+                <div class="alert alert-warning phline">
+                    <div class="form-group a@(j)" style="margin-bottom:0px;padding-left:10px;">
+                        @(FormHelpers.Text(title: "", left: "第", inputSize: "1", labelSize: "1", cls: "mc StartRank", attr: "onkeyup=setRank(this,1)", right: "名", value: gp.act.StartRank))
+                        @{ 
+                            if(gp.act.EndRank != null)
+                            {
+                                @FormHelpers.Text(title: "到", left: "第", inputSize: "1", labelSize: "1", cls: "mc EndRank", lcls: "lmc", attr: "onkeyup=setRank(this,2)", right: "名", value: gp.act.EndRank)
+                            }
+                        }
+                        <button type="button" href="javascript:void(0)" class="ItemBtn btn btn-danger btn-sm " onclick="removeLinePH(this)">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                        <button title="添加奖励物品" type="button" href="javascript:void(0)" onclick="addItm(this)" class="ItemBtn btn btn-info btn-sm ">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    @{
+                        var groupItems = items.Where(t => t.StartRank == gp.act.StartRank && t.EndRank == gp.act.EndRank).ToList();
+                        foreach (var item in groupItems)
+                        {
+                            <div class='form-group itline itm@(i)' style='margin-bottom:0px;padding-left:30px;margin-top:5px;'>
+                                @FormHelpers.Text(name: "mi[" + i + "].Count", title: "数量", inputSize: "01", labelSize: "1", cls: "mc", value: item.Count, inputStyle: "width:50px")
+                                @FormHelpers.Text(name: "mi[" + i + "].TypeName", title: "类型", inputSize: "2", labelSize: "1", rdly: true, valid: "required", value: item.TypeName)
+                                @FormHelpers.Hidden("mi[" + i + "].TypeId", item.TypeId)
+                                @FormHelpers.Text(name: "mi[" + i + "].ItemName", title: "物品", inputSize: "2", labelSize: "1", rdly: true, valid: "required", value: item.ItemName)
+                                @FormHelpers.Hidden("mi[" + i + "].ItemId", item.ItemId)
+                                @FormHelpers.Hidden("mi[" + i + "].StartRank", item.StartRank)
+                                @FormHelpers.Hidden("mi[" + i + "].EndRank", item.EndRank)
+                                @FormHelpers.Button(btnStyle: "danger", title: "", outline: false, cls: "ItemButton", icon: "glyphicon-remove", ajax: "removeLine(this)")
+                            </div>
+                            i++;
+                        }
+                    }
+                </div>
+                j++;
+            }
+        }
+    }
+</div>

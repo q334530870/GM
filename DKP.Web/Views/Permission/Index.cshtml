@@ -1,0 +1,122 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    .treeDiv{overflow-y:scroll;}
+</style>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins"  style="margin-bottom:0px">
+        <div class="ibox-content">
+            <div>
+                @FormHelpers.Button(id: "btn_add", icon: "glyphicon-plus", permission: true, btnStyle: "primary", title: "新增", toggle: "modal", target: "modal", href: Url.Action("Add", "Permission"))
+                @FormHelpers.Button(id: "btn_edit", icon: "glyphicon-pencil", permission: true, btnStyle: "warning ", title: "修改", toggle: "modal", target: "modal", href: Url.Action("Edit", "Permission"))
+                @FormHelpers.Button(id: "btn_delete", icon: "glyphicon-remove", permission: true, btnStyle: "danger", title: "删除", href: Url.Action("Delete", "Permission"), ajax: "del(this)")
+            </div>
+            <div class="modal inmodal" id="modal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content animated fadeIn">
+                    </div>
+                </div>
+            </div>
+            <div class="treeDiv">
+                <div id="tree">
+                    <ul>
+                        @{
+                            var permissions = Model as List<Permission>;
+                            foreach (var p in permissions)
+                            {
+                                var pers = new Dictionary<int, object>();
+                                pers.Add(2, new List<Permission>());
+                                <li id="@p.Id" data-jstree='{"opened":true,"icon":"@(!string.IsNullOrEmpty(p.Icon)?"fa "+p.Icon:"")"}'>
+                                    @p.Name
+                                    @{pers.Add(1, p);}
+                                    @Html.Partial("_PermissionTree", pers)
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Bottom{
+    <link href="~/Content/css/plugins/jsTree/style.min.css" rel="stylesheet">
+    <script src="~/Content/js/plugins/jsTree/jstree.min.js"></script>
+    <script>
+        $(function () {
+            $('#modal').on('hidden.bs.modal', function () {
+                $(this).removeData();
+            });
+            $(".treeDiv").height($(".treeDiv").parents("html:last").height()-110);
+        });
+        $('#tree').jstree({
+            core: {
+                "themes": { "icons": true }
+            },
+            //"checkbox": {
+            //    "keep_selected_style": false
+            //},
+            //plugins: ["checkbox"]
+            
+        }).bind('click.jstree', function (event) {
+            var id = $('#tree').jstree().get_selected();
+            var aurl = $("#btn_add").attr("href");
+            if (aurl.indexOf("?") > 0) {
+                aurl = aurl.substring(0, aurl.indexOf("?"));
+            }
+            aurl += "?id=" + id;
+            $("#btn_add").attr("href", aurl);
+
+            var eurl = $("#btn_edit").attr("href");
+            if (eurl.indexOf("?") > 0) {
+                eurl = eurl.substring(0, eurl.indexOf("?"));
+            }
+            eurl += "?id=" + id;
+            $("#btn_edit").attr("href", eurl);
+
+            var durl = $("#btn_delete").attr("href");
+            if (durl.indexOf("?") > 0) {
+                durl = durl.substring(0, durl.indexOf("?"));
+            }
+            durl += "?id=" + id;
+            $("#btn_delete").attr("href", durl);
+        });
+        //alert($('#tree').jstree().get_checked());
+        function del(arg) {
+            swal({
+                title: "您确定要删除吗？",
+                text: "删除后将无法恢复，请谨慎操作！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                cancelButtonText: "取消",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    url: $(arg).attr("href"),
+                    dataType: 'json',
+                    type: 'post',
+                    error: function () {
+                        window.parent.showMsg("error", "服务器超时！");
+                        $(form).find("button[type=submit]").removeAttr("disabled");
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            window.parent.showMsg("success", data.msg);
+                            window.location.reload();
+                        }
+                        else {
+                            window.parent.showMsg("error", data.msg);
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+        }
+    </script>
+}

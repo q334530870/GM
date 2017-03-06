@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_RightTableLayout.cshtml";
+    ViewBag.TableUrl = Url.Action("List", "Server");
+}
+
+@section toolbar{
+    <div class="modal inmodal" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated fadeIn">
+            </div>
+        </div>
+    </div>
+}
+@section table{
+    <th data-field="HostName">服务器名称</th>
+    <th data-field="Type">类型</th>
+    <th data-field="IP">IP地址</th>
+    <th data-field="GameSerPort">端口</th>
+    <th data-field="User">在线人数</th>
+    <th data-field="IPadUsers">ipad在线人数</th>
+    <th data-field="IPhoneUsers">iphone在线人数</th>
+    <th data-field="FerrMem">空闲内存数</th>
+    <th data-field="UsedMem">占用内存数</th>
+    <th data-field="TotalMem">总内存数</th>
+    <th data-field="CPU_Used">CPU利用率</th>
+    <th data-field="RefreshDate">更新时间</th>
+    <th data-field="Kernal">版本号</th>
+}
+

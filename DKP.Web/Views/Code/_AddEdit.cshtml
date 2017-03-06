@@ -1,0 +1,47 @@
+﻿@*@{
+        if (Model.Id > 0)
+        {
+            @FormHelpers.Hidden("Id", Model.Id)
+            @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+            @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+            @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+        }
+    }*@
+
+<script>
+    $(function () {
+        $("#allcheck").click(function () {
+            if ($(":checkbox[name='Servers']:eq(0)").attr("checked") != "checked") {
+                $(":checkbox[name='Servers']").removeAttr("checked");
+                $(":checkbox[name='Servers']").siblings("label").click();
+                $(":checkbox[name='Servers']").attr("checked", "checked");
+            }
+            else {
+                $(":checkbox[name='Servers']").removeAttr("checked");
+            }
+        });
+    });
+</script>
+<div class="form-group">
+    @FormHelpers.Text("开启时间", "Start", "", valid: "required", inputSize: "6",date:true)
+</div>
+<div class="form-group">
+    @FormHelpers.Text("过期时间", "End", "", valid: "required", inputSize: "6", date: true)
+</div>
+<div class="form-group">
+    @FormHelpers.Text("名称", "Name", "", valid: "required", inputSize: "6")
+</div>
+<div class="form-group">
+    @FormHelpers.TextArea("奖励内容", "Content", "", valid: "required", inputSize: "6")
+</div>
+<div class="form-group">
+    @FormHelpers.Checkbox(id: "allcheck", title: "全选", inline: true, type: "success", cls: "checkbox-circle")
+    @FormHelpers.Checkbox(id: "checkbox1", text: "服务器", title: "X1", value: "1", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox2", title: "X2", value: "2", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox3", title: "X3", value: "3", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox4", title: "X4", value: "4", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox5", title: "X5", value: "5", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox6", title: "X6", value: "6", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox7", title: "X7", value: "7", name: "Servers", inline: true)
+    @FormHelpers.Checkbox(id: "checkbox8", title: "X8", value: "8", name: "Servers", inline: true)
+</div>

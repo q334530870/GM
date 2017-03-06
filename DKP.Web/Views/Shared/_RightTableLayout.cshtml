@@ -1,0 +1,160 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<style>
+    .bootstrap-table #toolbar{margin-top:15px;}
+    .searchButton{margin-top:2px;}
+    .note-editable{background-color:white;}
+    .help-block {clear:both;}
+    .ownsearch{padding:0px 15px 0px 15px;}
+    .ownsearch .input-group{margin-right:20px;}
+     #addlineButton{margin:0px 20px 20px 20px;}
+</style>
+<div class="wrapper wrapper-content animated fadeInRight" style="padding:10px 10px 0px 10px;">
+    <div class="ibox float-e-margins" style="margin-bottom:0px">
+        @*<div class="ibox-title">
+            <h5>@ViewBag.Name</h5>
+        </div>*@
+        <div class="ibox-content"  style="padding-bottom:0px;">
+            @RenderSection("toolbar",false)
+            <div class="ownsearch">
+                @RenderSection("search", false)
+            </div>
+                <table id="table"
+                       data-search="@(ViewBag.ShowSearch==null?"true":"false")" 
+                       data-undefined-text="-"
+                       @*隔行变色*@
+                       data-striped="false"
+                       data-method="get"
+                       data-search-on-enter-key="true"
+                       data-search-text=""
+                       data-toolbar="#toolbar" 
+                       data-pagination="true" 
+                       data-side-pagination="server" 
+                       data-url="@ViewBag.TableUrl" 
+                       data-show-columns="true" 
+                       data-show-refresh="true" 
+                       data-id-field="id" 
+                       data-query-params="queryParams" 
+                       data-show-export="true"
+                       data-show-toggle="true"
+                       data-page-list="[10, 15, 20, 30, 50, 100, 全部]"
+                       >
+                    <thead>
+                        <tr>
+                            @RenderSection("table", false)
+                        </tr>
+                    </thead>
+                </table>
+            @RenderBody()
+        </div>
+    </div>
+</div>
+@section Bottom{
+<script>
+    //表格高度响应式
+    window.onresize = function () {
+        $("#table").bootstrapTable('resetView', { height: $("#table").parents("html:last").height() - ($(".ibox-content:last").find(".ownsearch .searchButton").size() > 0 ? ($(".ibox-content:last").find(".ownsearch").height() - 12) : 0) * 1.5 - 33 });
+    }
+    //手动刷新表格
+    function refreshTable() {
+        $("#table").bootstrapTable('refresh');
+    }
+    $(function () {
+        //日期控件格式化
+        $('.dtp').datetimepicker({
+            language: "zh-CN",
+            orientation: "top",
+            todayBtn: true,
+            autoclose: true
+        });
+        //初始化表格
+        $("#table").bootstrapTable({
+            //计算高度
+            height: $("#table").parents("html:last").height() - ($(".ibox-content:last").find(".ownsearch .searchButton").size()>0 ? ($(".ibox-content:last").find(".ownsearch").height() - 12) : 0) * 1.5 - 33,
+            //数据加载成功回调
+            onLoadSuccess: function (data) {
+                if (data["status"] == false) {
+                    window.parent.showMsg('error', data["msg"]);
+                }
+            },
+            //数据加载失败回调
+            onLoadError: function (status) {
+                window.parent.showMsg('error', "错误代码："+status);
+            }
+        });
+    });
+    //格式化操作列的数据（与表格对应的列设置绑定）
+    function operateInfo(value, row, index) {
+        $("#hidToolbar").children().each(function () {
+            if ($(this).attr("id").indexOf("ajax") >= 0 || $(this).hasClass("newTab")) {
+                $(this).attr("h", $(this).attr("hf") + "?id=" + value);
+                $(this).removeAttr("href");
+            }
+            else {
+                if ($(this).attr("hf")) {
+                    $(this).attr("href", $(this).attr("hf") + "?id=" + value);
+                }
+
+            }
+        });
+        return $("#hidToolbar").html();
+    }
+    //删除通用方法
+    function del(arg) {
+        swal({
+            title: "您确定要删除吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            cancelButtonText:"取消",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: $(arg).attr("h"),
+                dataType: 'json',
+                type: 'post',
+                error: function () {
+                    window.parent.showMsg("error", "服务器超时！");
+                    $(form).find("button[type=submit]").removeAttr("disabled");
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        window.parent.showMsg("success", data.msg);
+                        window.location.reload();
+                    }
+                    else {
+                        window.parent.showMsg("error", data.msg);
+                    }
+                }
+            });
+        });
+    }
+    //下载通用方法
+    function down(arg) {
+        alert(123);
+    }
+
+    //重写查询参数
+    function queryParams(params) {
+        return params;
+    }
+
+    //打开新标签页
+    function newTab(arg) {
+        //$(arg).text()
+        window.parent.newTab($(arg).attr("h"), $.trim( $(arg).attr("title")));
+    }
+
+    //隐藏modal回调事件
+    $(function () {
+        $('#modal').on('hidden.bs.modal', function () {
+            $(this).removeData("bs.modal");
+            $(this).find(".modal-content").html("");
+        });
+    });
+</script>
+    @RenderSection("Bottom",false)
+}

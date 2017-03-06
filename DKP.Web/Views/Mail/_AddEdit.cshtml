@@ -1,0 +1,122 @@
+﻿<script src="~/Content/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+<script>
+    $(function () {
+        //设置点击添加一行
+        var addline = $(".demoline").html();
+        $(".demoline").remove();
+        $("#addItemButton").click(function () {
+            if (!$("#typeId").val()) {
+                parent.showMsg("error", "请选择物品类型");
+                return;
+            }
+            if (!$("#itemId").val()) {
+                parent.showMsg("error", "请选择物品");
+                return;
+            }
+            var index = $(".rstline").find(".form-group").size();
+            var line = "<div  class='form-group al" + index + "' style='margin-bottom:0px;'>" + addline + "</div>";
+            $(".rstline").append(line);
+            $(".al" + index).find("input[name='mi.TypeName']").val($("#type").val()).attr("name", "mi[" + index + "].TypeName");
+            $(".al" + index).find("input[name='mi.TypeId']").val($("#typeId").val()).attr("name", "mi[" + index + "].TypeId");
+            $(".al" + index).find("input[name='mi.ItemName']").val($("#item").val()).attr("name", "mi[" + index + "].ItemName");
+            $(".al" + index).find("input[name='mi.ItemId']").val($("#itemId").val()).attr("name", "mi[" + index + "].ItemId");
+            $(".al" + index).find("input[name='mi.Count']").attr("name", "mi[" + index + "].Count");
+        });
+
+        //初始化suggest控件
+        var agentSuggest = $("#agent").bsSuggest({ url: "@(Url.Action("GetAgents","Mail"))", effectiveFields: ["id", "name"], effectiveFieldsAlias: {"name": "名称" }, idField: "id", keyField: "name" })
+            .on('onSetSelectValue', function (e, keyword) {
+                $("#agentId").val(keyword["id"]);
+                $("#server,#serverId").val("");
+                $("#server").removeAttr("disabled");
+                $("#server").parent().find(".dropdown-toggle").removeAttr("disabled");
+                $("#server").bsSuggest("destroy");
+                $("#server").bsSuggest({ url: "@(Url.Action("GetServers", "Mail"))?id=" + keyword["id"], effectiveFields: ["id", "name","key"], effectiveFieldsAlias: {"name": "名称","key":"地址" }, idField: "id", keyField: "name" })
+                    .on('onSetSelectValue', function (e, keyword) {
+                        $("#serverId").val(keyword["id"]);
+                    }).on('onUnsetSelectValue', function (e) {
+                        $("#serverId").val("");
+                    });
+        }).on('onUnsetSelectValue', function (e) {
+            $("#agentId,#serverId,#server").val("");
+            $("#server").attr("disabled", "disabled");
+            $("#server").parent().find(".dropdown-toggle").attr("disabled", "disabled");
+            $("#server").bsSuggest("destroy");
+        });
+        $("#server").attr("disabled", "disabled");
+
+        //初始化suggest控件
+        var typeSuggest = $("#type").bsSuggest({ url: "@(Url.Action("GetTypes","Mail"))", effectiveFields: ["reward_type", "name"], effectiveFieldsAlias: { "reward_type": "id", "name": "名称" }, idField: "reward_type", keyField: "name" })
+            .on('onSetSelectValue', function (e, keyword) {
+                $("#typeId").val(keyword["id"]);
+                $("#item,#itemId").val("");
+                $("#item").removeAttr("disabled");
+                $("#item").parent().find(".dropdown-toggle").removeAttr("disabled");
+                $("#item").bsSuggest("destroy");
+                $("#item").bsSuggest({ url: "@(Url.Action("GetItems", "Mail"))?id=" + keyword["id"], effectiveFields: ["id", "name"], effectiveFieldsAlias: {"name": "名称" }, idField: "id", keyField: "name" })
+                    .on('onSetSelectValue', function (e, keyword) {
+                        $("#itemId").val(keyword["id"]);
+                    }).on('onUnsetSelectValue', function (e) {
+                        $("#itemId").val("");
+                    });
+            }).on('onUnsetSelectValue', function (e) {
+                $("#typeId,#itemId,#item").val("");
+                $("#item").attr("disabled", "disabled");
+                $("#item").parent().find(".dropdown-toggle").attr("disabled", "disabled");
+                $("#item").bsSuggest("destroy");
+            });
+            $("#item").attr("disabled", "disabled");
+        });
+
+    function removeLine(arg){
+        $(arg).parent().remove();
+        var index = 0;
+        $(".rstline").find(".form-group").each(function () {
+            $(this).find("input[name$='.TypeName']").attr("name", "mi[" + index + "].TypeName");
+            $(this).find("input[name$='.TypeId']").attr("name", "mi[" + index + "].TypeId");
+            $(this).find("input[name$='.ItemName']").attr("name", "mi[" + index + "].ItemName");
+            $(this).find("input[name$='.ItemId']").attr("name", "mi[" + index + "].ItemId");
+            $(this).find("input[name$='.Count']").attr("name", "mi[" + index + "].Count");
+            index++;
+        });
+    }
+</script>
+<style>
+    .ItemButton{margin-top:2px;margin-left:20px;}
+</style>
+<div class="form-group">
+    @FormHelpers.Text(title: "渠道",name:"AgentName", inputSize: "3", id: "agent", suggest: true)
+    @FormHelpers.Hidden("AgentId", "", id: "agentId")
+    @FormHelpers.Text(title: "服务器", name: "ServerName", inputSize: "3", id: "server", suggest: true)
+    @FormHelpers.Hidden("ServerId", "", id: "serverId")
+</div>
+
+<div class="form-group">
+    @FormHelpers.Text("角色ID", "CharacterId", valid: "required", inputSize: "8")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("邮件标题", "Title", inputSize: "8",valid:"required")
+</div>
+<div class="form-group">
+    @FormHelpers.TextArea("邮件内容", "Contents", "",inputSize: "8")
+</div>
+<div class="alert alert-info" style="padding-left:0px;">
+    <div class="form-group" style="margin-bottom:0px;">
+        @FormHelpers.Text(title: "选择类型", inputSize: "2", id: "type", suggest: true)
+        @FormHelpers.Hidden("", "",id:"typeId")
+        @FormHelpers.Text(title: "选择物品", inputSize: "3",id:"item", suggest: true)
+        @FormHelpers.Hidden("", "", id: "itemId")
+        @FormHelpers.Button(id: "addItemButton", btnStyle: "info", title: "添加物品", icon: "glyphicon-plus", outline: false,cls: "ItemButton")
+    </div>
+</div>
+<div class="demoline alert alert-success">
+    @FormHelpers.Text(name: "mi.TypeName", title: "类型", inputSize: "2", rdly: true, valid: "required")
+    @FormHelpers.Hidden("mi.TypeId", "")
+    @FormHelpers.Text(name: "mi.ItemName", title: "物品", inputSize: "2",labelSize: "1", rdly: true, valid: "required")
+    @FormHelpers.Hidden("mi.ItemId", "")
+    @FormHelpers.Text(name: "mi.Count", title: "数量", inputSize: "2", labelSize: "1",attr:"min=1",valid:"required")
+    @FormHelpers.Button(btnStyle: "danger", title: "", outline: false, cls: "ItemButton", icon: "glyphicon-remove", ajax: "removeLine(this)")
+</div>
+<div class="rstline alert alert-success">
+
+</div>

@@ -1,0 +1,20 @@
+﻿@model Dictionary
+@{ 
+    if (Model.Id > 0)
+    {
+        @FormHelpers.Hidden("Id", Model.Id)
+        @FormHelpers.Hidden("CreatorId", Model.CreatorId)
+        @FormHelpers.Hidden("CreatorName", Model.CreatorName)
+        @FormHelpers.Hidden("CreateTime", Model.CreateTime)
+    }
+}
+<div class="form-group">
+    @FormHelpers.Select(name: "DictionaryGroupId", text:"类别",selectValue:Model.DictionaryGroupId+"", options: ViewBag.Group,valid:"required",labelSize:"3",inputSize:"8")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("名称", "Name", Model.Name, valid: "required", labelSize: "3", inputSize: "8")
+</div>
+<div class="form-group">
+    @FormHelpers.Text("编码", "Code", Model.Code, valid: "required", labelSize: "3", inputSize: "8", rdly: Model.Id > 0 ? true:false)
+</div>
+

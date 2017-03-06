@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{3AEBFF5B-0495-478C-9DAA-9C14FFE7E561}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{B30AC8AB-1F3E-4013-8CFD-698DE344C802}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\Lib\System.Net.Http.dll = Libraries\Lib\System.Net.Http.dll
+		Libraries\Lib\System.Net.Http.WebRequest.dll = Libraries\Lib\System.Net.Http.WebRequest.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GM.Core", "Libraries\DKP.Core\GM.Core.csproj", "{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GM.Data", "Libraries\DKP.Data\GM.Data.csproj", "{E4D1FE23-ABDA-4B0A-A579-5C8311313F27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GM.Services", "Libraries\DKP.Services\GM.Services.csproj", "{C896FE0A-32DC-4B15-BC83-2441D6B881DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GM.Web.Framework", "DKP.Web.Framework\GM.Web.Framework.csproj", "{5173BDD5-4503-40DC-81CC-19EE7983D0B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GM.Web", "DKP.Web\GM.Web.csproj", "{1BE634CB-9354-4C7F-B2A6-F25F3468E4DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DKP.WebApi", "DKP.WebApi\DKP.WebApi.csproj", "{14E772AD-2DE4-450B-950F-1192CFB792F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4D1FE23-ABDA-4B0A-A579-5C8311313F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4D1FE23-ABDA-4B0A-A579-5C8311313F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4D1FE23-ABDA-4B0A-A579-5C8311313F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4D1FE23-ABDA-4B0A-A579-5C8311313F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C896FE0A-32DC-4B15-BC83-2441D6B881DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C896FE0A-32DC-4B15-BC83-2441D6B881DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C896FE0A-32DC-4B15-BC83-2441D6B881DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C896FE0A-32DC-4B15-BC83-2441D6B881DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5173BDD5-4503-40DC-81CC-19EE7983D0B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5173BDD5-4503-40DC-81CC-19EE7983D0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5173BDD5-4503-40DC-81CC-19EE7983D0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5173BDD5-4503-40DC-81CC-19EE7983D0B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BE634CB-9354-4C7F-B2A6-F25F3468E4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BE634CB-9354-4C7F-B2A6-F25F3468E4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BE634CB-9354-4C7F-B2A6-F25F3468E4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BE634CB-9354-4C7F-B2A6-F25F3468E4DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14E772AD-2DE4-450B-950F-1192CFB792F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14E772AD-2DE4-450B-950F-1192CFB792F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14E772AD-2DE4-450B-950F-1192CFB792F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14E772AD-2DE4-450B-950F-1192CFB792F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B30AC8AB-1F3E-4013-8CFD-698DE344C802} = {3AEBFF5B-0495-478C-9DAA-9C14FFE7E561}
+		{3D9AD1C0-1F0B-4FE2-A524-99B3421B81C2} = {3AEBFF5B-0495-478C-9DAA-9C14FFE7E561}
+		{E4D1FE23-ABDA-4B0A-A579-5C8311313F27} = {3AEBFF5B-0495-478C-9DAA-9C14FFE7E561}
+		{C896FE0A-32DC-4B15-BC83-2441D6B881DA} = {3AEBFF5B-0495-478C-9DAA-9C14FFE7E561}
+	EndGlobalSection
+EndGlobal

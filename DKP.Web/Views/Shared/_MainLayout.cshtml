@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <link href="~/Content/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/Scripts/simditor-2.3.6/styles/simditor.css" />
+    <link href="~/Content/css/animate.min.css" rel="stylesheet">
+    <link href="~/Content/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="~/Content/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="~/Content/css/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet" />
+    <link href="~/Content/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="~/Content/css/plugins/datapicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <link href="~/Content/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    @RenderSection("Resource",false)
+    <title>@ViewBag.Title</title>
+</head>
+<body class="gray-bg">
+    @RenderBody()
+</body>
+</html>
+<script src="~/Content/js/jquery.min.js?v=2.1.4"></script>
+<script src="~/Content/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="~/Content/js/plugins/layer/layer.min.js"></script>
+<script src="~/Content/js/content.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="~/Scripts/simditor-2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="~/Scripts/simditor-2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="~/Scripts/simditor-2.3.6/scripts/uploader.js"></script>
+<script type="text/javascript" src="~/Scripts/simditor-2.3.6/scripts/simditor.js"></script>
+<script src="~/Content/js/welcome.min.js"></script>
+<script src="~/Content/js/plugins/bootstrap-table/bootstrap-table.js"></script>
+<script src="~/Content/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+<script src="~/Content/js/plugins/bootstrap-table/bootstrap-table-export.js"></script>
+<script src="~/Content/js/plugins/bootstrap-table/tableExport.js"></script>
+<script src="~/Content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="~/Content/js/plugins/validate/messages_zh.min.js"></script>
+<script src="~/Content/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="~/Content/js/plugins/datapicker/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/js/plugins/datapicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/Content/js/plugins/jasny/jasny-bootstrap.min.js"></script>
+@RenderSection("Bottom", false)

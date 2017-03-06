@@ -1,0 +1,122 @@
+﻿@{
+    //隐藏默认搜索框
+    ViewBag.ShowSearch = "false";
+    Layout = "~/Views/Shared/_RightTableLayout.cshtml";
+    ViewBag.TableUrl = Url.Action("List", "Member");
+}
+
+@section toolbar{
+    <div id="toolbar" class="btn-group">
+        @FormHelpers.Button(id: "btn_add", icon: "glyphicon-plus", permission: true, btnStyle: "primary", title: "新增", toggle: "modal", target: "modal", href: Url.Action("Add", "Member"))
+    </div>
+    <div class="modal inmodal" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated fadeIn">
+            </div>
+        </div>
+    </div>
+    <div id="hidToolbar" class="hide">
+        @FormHelpers.Button(id: "btn_edit", icon: "glyphicon-pencil", permission: true, a: true, href: Url.Action("Edit", "Member"), btnStyle: "warning ", title: "修改", toggle: "modal", target: "modal", hf: true)
+        @FormHelpers.Button(id: "ajax_jy", icon: "glyphicon glyphicon-ban-circle", permission: true, a: true, href: Url.Action("JY", "Member"), btnStyle: "info", title: "禁言/解禁", hf: true, ajax: "JY(this)")
+        @FormHelpers.Button(id: "ajax_sh", icon: "glyphicon-remove-circle", permission: true, a: true, href: Url.Action("SH", "Member"), btnStyle: "danger", title: "锁号/解锁", hf: true, ajax: "SH(this)")
+    </div>
+}
+@section search{
+    @FormHelpers.Text("", "account_id", "", valid: "required", inputSize: "2", left: "账号ID")
+    @FormHelpers.Text("", "user_id", "", valid: "required", inputSize: "2",left: "角色ID")
+    @FormHelpers.Button(ajax: "refreshTable()", btnStyle: "primary", cls: "searchButton btn-circle", icon: "glyphicon-search")
+}
+@section table{
+    <th data-field="id">ID</th>
+    <th data-field="user_id">角色ID</th>
+    <th data-field="account_id">账号ID</th>
+    <th data-field="name">角色名</th>
+    <th data-field="ip" data-width="200">最后登录IP</th>
+    <th data-field="last_login_time" data-width="200">最后登录时间</th>
+    <th data-field="device_type">终端类型</th>
+    <th data-field="device_id">设备编号</th>
+    <th data-field="platform_name">渠道</th>
+    <th data-field="status" data-width="60">状态</th>
+    <th data-field="opId" data-width="130" data-formatter="operateInfo">操作</th>
+}
+<script>
+    //添加检索
+    function queryParams(params) {
+        params.account_id = $(".ownsearch").find(":text[name='account_id']").val();
+        params.user_id = $(".ownsearch").find(":text[name='user_id']").val();
+        return params;
+    }
+    function JY(arg) {
+        var lb = $(arg).parent().parent().find(".label").html();
+        var text = "禁言";
+        if (lb == "禁言") {
+            text = "解除禁言";
+        }
+        swal({
+            title: "您确定要" + text + "吗？",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: $(arg).attr("h"),
+                dataType: 'json',
+                type: 'post',
+                error: function () {
+                    window.parent.showMsg("error", "服务器超时！");
+                    $(form).find("button[type=submit]").removeAttr("disabled");
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        window.parent.showMsg("success", data.msg);
+                        window.location.reload();
+                    }
+                    else {
+                        window.parent.showMsg("error", data.msg);
+                    }
+                }
+            });
+        });
+    }
+
+    function SH(arg) {
+        var lb = $(arg).parent().parent().find(".label").html();
+        var text = "锁号";
+        if (lb == "锁号") {
+            text = "解除锁号";
+        }
+        swal({
+            title: "您确定要" + text + "吗？",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: $(arg).attr("h"),
+                dataType: 'json',
+                type: 'post',
+                error: function () {
+                    window.parent.showMsg("error", "服务器超时！");
+                    $(form).find("button[type=submit]").removeAttr("disabled");
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        window.parent.showMsg("success", data.msg);
+                        window.location.reload();
+                    }
+                    else {
+                        window.parent.showMsg("error", data.msg);
+                    }
+                }
+            });
+        });
+    }
+</script>

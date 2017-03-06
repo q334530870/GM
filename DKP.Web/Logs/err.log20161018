@@ -1,0 +1,19 @@
+2016-10-18 15:59:02,321 [7] ERROR DKP.Web.Framework.Filters.ExceptionFilter - /Activity/ConLoginAdd
+System.InvalidOperationException: 未找到视图“ConLoginAdd”或其母版视图，或没有视图引擎支持搜索的位置。搜索了以下位置: 
+~/Views/Activity/ConLoginAdd.aspx
+~/Views/Activity/ConLoginAdd.ascx
+~/Views/Shared/ConLoginAdd.aspx
+~/Views/Shared/ConLoginAdd.ascx
+~/Views/Activity/ConLoginAdd.cshtml
+~/Views/Activity/ConLoginAdd.vbhtml
+~/Views/Shared/ConLoginAdd.cshtml
+~/Views/Shared/ConLoginAdd.vbhtml
+   at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.<>c__DisplayClass1a.<InvokeActionResultWithFilters>b__17()
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass25.<BeginInvokeAction>b__22(IAsyncResult asyncResult)
